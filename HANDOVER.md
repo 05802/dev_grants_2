@@ -5,7 +5,7 @@
 **PEN** is an internal tool for writing grant applications with AI assistance. It uses a "test-driven" approach where evaluation criteria become tests for grant content.
 
 **Repository**: `dev_grants_2`
-**Current Branch**: `claude/review-implementation-efficiency-1sijm`
+**Current Branch**: `main`
 **Status**: Ready for Cloudflare deployment
 
 ---
