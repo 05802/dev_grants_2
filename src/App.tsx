@@ -1,10 +1,17 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { FileText, LayoutGrid } from 'lucide-react';
 import { useApplicationStore } from './stores/applicationStore';
 import { QuestionEditor } from './components/editor/QuestionEditor';
+import { LogframeEditor } from './components/logframe/LogframeEditor';
 import { v4 as uuidv4 } from 'uuid';
+import { cn } from './lib/utils';
+
+type ViewMode = 'questions' | 'logframe';
 
 function App() {
   const { application, setApplication } = useApplicationStore();
+  const [viewMode, setViewMode] = useState<ViewMode>('questions');
+  const [selectedQuestionId, setSelectedQuestionId] = useState<string | null>(null);
 
   // Initialize demo application on mount
   useEffect(() => {
@@ -113,6 +120,13 @@ function App() {
     }
   }, [application, setApplication]);
 
+  // Set initial selected question
+  useEffect(() => {
+    if (application && !selectedQuestionId && application.questions.length > 0) {
+      setSelectedQuestionId(application.questions[0].id);
+    }
+  }, [application, selectedQuestionId]);
+
   if (!application) {
     return (
       <div className="h-screen w-screen flex items-center justify-center bg-bg-primary">
@@ -145,44 +159,115 @@ function App() {
 
       {/* Main Content Area */}
       <div className="flex-1 flex overflow-hidden">
-        {/* Sidebar - Question List */}
-        <aside className="w-64 border-r border-border-muted bg-bg-secondary overflow-y-auto">
-          <div className="p-4">
-            <h2 className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-3">
-              Questions
-            </h2>
-            <nav className="space-y-1">
-              {application.questions.map((question, index) => (
-                <button
-                  key={question.id}
-                  className="w-full text-left px-3 py-2 rounded-md text-sm text-text-primary hover:bg-bg-elevated transition-colors"
-                >
-                  <div className="flex items-start gap-2">
-                    <span className="text-text-muted font-mono text-xs mt-0.5">
-                      {index + 1}.
-                    </span>
-                    <div className="flex-1 min-w-0">
-                      <div className="font-medium truncate">
-                        {question.title}
+        {/* Sidebar */}
+        <aside className="w-64 border-r border-border-muted bg-bg-secondary overflow-y-auto flex flex-col">
+          {/* View Mode Tabs */}
+          <div className="p-3 border-b border-border-muted">
+            <div className="flex bg-bg-elevated rounded-lg p-1">
+              <button
+                onClick={() => setViewMode('questions')}
+                className={cn(
+                  'flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors',
+                  viewMode === 'questions'
+                    ? 'bg-bg-primary text-text-primary shadow-sm'
+                    : 'text-text-muted hover:text-text-secondary'
+                )}
+              >
+                <FileText className="w-3.5 h-3.5" />
+                Questions
+              </button>
+              <button
+                onClick={() => setViewMode('logframe')}
+                className={cn(
+                  'flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors',
+                  viewMode === 'logframe'
+                    ? 'bg-bg-primary text-text-primary shadow-sm'
+                    : 'text-text-muted hover:text-text-secondary'
+                )}
+              >
+                <LayoutGrid className="w-3.5 h-3.5" />
+                Logframe
+              </button>
+            </div>
+          </div>
+
+          {/* Sidebar Content */}
+          <div className="flex-1 p-4 overflow-y-auto">
+            {viewMode === 'questions' ? (
+              <>
+                <h2 className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-3">
+                  Questions
+                </h2>
+                <nav className="space-y-1">
+                  {application.questions.map((question, index) => (
+                    <button
+                      key={question.id}
+                      onClick={() => setSelectedQuestionId(question.id)}
+                      className={cn(
+                        'w-full text-left px-3 py-2 rounded-md text-sm transition-colors',
+                        selectedQuestionId === question.id
+                          ? 'bg-bg-elevated text-text-primary'
+                          : 'text-text-secondary hover:bg-bg-elevated hover:text-text-primary'
+                      )}
+                    >
+                      <div className="flex items-start gap-2">
+                        <span className="text-text-muted font-mono text-xs mt-0.5">
+                          {index + 1}.
+                        </span>
+                        <div className="flex-1 min-w-0">
+                          <div className="font-medium truncate">
+                            {question.title}
+                          </div>
+                          <div className="text-xs text-text-muted mt-0.5">
+                            {question.versions.find(
+                              (v) => v.id === question.currentVersionId
+                            )?.wordCount || 0}{' '}
+                            / {question.maxWords || '∞'} words
+                          </div>
+                        </div>
                       </div>
-                      <div className="text-xs text-text-muted mt-0.5">
-                        {question.versions.find(
-                          (v) => v.id === question.currentVersionId
-                        )?.wordCount || 0}{' '}
-                        / {question.maxWords || '∞'} words
-                      </div>
+                    </button>
+                  ))}
+                </nav>
+              </>
+            ) : (
+              <>
+                <h2 className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-3">
+                  Logical Framework
+                </h2>
+                <div className="space-y-2 text-sm text-text-secondary">
+                  <div className="px-3 py-2 rounded-md bg-bg-elevated">
+                    <div className="text-xs text-text-muted mb-1">Goal</div>
+                    <div className="truncate">
+                      {application.logframe.goal || 'Not defined'}
                     </div>
                   </div>
-                </button>
-              ))}
-            </nav>
+                  <div className="px-3 py-2">
+                    <span className="text-text-muted">Outcomes:</span>{' '}
+                    {application.logframe.outcomes.length}
+                  </div>
+                  <div className="px-3 py-2">
+                    <span className="text-text-muted">Outputs:</span>{' '}
+                    {application.logframe.outputs.length}
+                  </div>
+                  <div className="px-3 py-2">
+                    <span className="text-text-muted">Activities:</span>{' '}
+                    {application.logframe.activities.length}
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         </aside>
 
         {/* Main Editor */}
         <main className="flex-1 overflow-hidden">
-          {application.questions.length > 0 && (
-            <QuestionEditor questionId={application.questions[0].id} />
+          {viewMode === 'questions' ? (
+            selectedQuestionId && (
+              <QuestionEditor questionId={selectedQuestionId} />
+            )
+          ) : (
+            <LogframeEditor />
           )}
         </main>
       </div>

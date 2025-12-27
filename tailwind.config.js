@@ -39,6 +39,10 @@ export default {
           'red-hover': '#DC2626',
           amber: '#F59E0B',
           'amber-hover': '#D97706',
+          yellow: '#EAB308',
+          'yellow-hover': '#CA8A04',
+          orange: '#F97316',
+          'orange-hover': '#EA580C',
         },
       },
       fontFamily: {
