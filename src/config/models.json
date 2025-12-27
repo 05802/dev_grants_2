@@ -1,0 +1,64 @@
+[
+  {
+    "id": "gpt-4-turbo",
+    "name": "GPT-4 Turbo (Precise)",
+    "provider": "openai",
+    "contextWindow": 128000,
+    "apiKeyEnvVar": "VITE_OPENAI_API_KEY",
+    "parameters": {
+      "modelName": "gpt-4-turbo-preview",
+      "temperature": 0.2,
+      "maxTokens": 4000,
+      "frequencyPenalty": 0.0,
+      "presencePenalty": 0.0
+    }
+  },
+  {
+    "id": "gpt-4-creative",
+    "name": "GPT-4 Turbo (Creative)",
+    "provider": "openai",
+    "contextWindow": 128000,
+    "apiKeyEnvVar": "VITE_OPENAI_API_KEY",
+    "parameters": {
+      "modelName": "gpt-4-turbo-preview",
+      "temperature": 0.9,
+      "maxTokens": 4000
+    }
+  },
+  {
+    "id": "gpt-3.5-fast",
+    "name": "GPT-3.5 (Fast/Draft)",
+    "provider": "openai",
+    "contextWindow": 16000,
+    "apiKeyEnvVar": "VITE_OPENAI_API_KEY",
+    "parameters": {
+      "modelName": "gpt-3.5-turbo",
+      "temperature": 0.7,
+      "maxTokens": 2000
+    }
+  },
+  {
+    "id": "claude-opus",
+    "name": "Claude Opus (Analysis)",
+    "provider": "anthropic",
+    "contextWindow": 200000,
+    "apiKeyEnvVar": "VITE_ANTHROPIC_API_KEY",
+    "parameters": {
+      "modelName": "claude-3-opus-20240229",
+      "temperature": 0.3,
+      "maxTokens": 4000
+    }
+  },
+  {
+    "id": "claude-sonnet",
+    "name": "Claude Sonnet (Balanced)",
+    "provider": "anthropic",
+    "contextWindow": 200000,
+    "apiKeyEnvVar": "VITE_ANTHROPIC_API_KEY",
+    "parameters": {
+      "modelName": "claude-3-sonnet-20240229",
+      "temperature": 0.5,
+      "maxTokens": 3000
+    }
+  }
+]
