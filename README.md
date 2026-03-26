@@ -1,4 +1,4 @@
-# PEN - Grant Application Platform
+# This doesnt work ⚠️
 
 IDE for writing grant applications using AI assistance. Uses a "test-driven" approach where evaluation criteria become tests for your content.
 
